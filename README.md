@@ -14,11 +14,12 @@
 Configuration:
 
 ```
-port: 8080
+# config.yml
+port: 80
 servers:
-  - '127.0.0.1:8001'
-  - '127.0.0.1:8002'
-  - '127.0.0.1:8003'
+- address: 'http://192.168.0.103:8081'
+- address: '192.168.0.103:8082'         
+- address: 'http://nginx'                 
 ```
 
 Once a connection arrives to `l4`, picks one from the list.
