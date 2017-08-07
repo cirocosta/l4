@@ -14,6 +14,12 @@ const (
 )
 
 func NewProxy(cfg ProxyConfig) (proxy Proxy, err error) {
+	proxy.toStats = &IoStats{}
+	proxy.fromStats = &IoStats{}
+	proxy.from = cfg.From
+	proxy.to = cfg.To
+	proxy.connectionTimeout = cfg.ConnectionTimeout
+
 	return
 }
 
@@ -138,6 +144,10 @@ func Copy(to io.Writer, from io.Reader, stats *IoStats) (err error) {
 		writeN int
 	)
 
+	fmt.Println("%+v\n", to)
+	fmt.Println("%+v\n", from)
+	fmt.Println("%+v\n", stats)
+
 	for {
 		readN, err = from.Read(buf)
 		if err != nil {
@@ -172,7 +182,7 @@ func Copy(to io.Writer, from io.Reader, stats *IoStats) (err error) {
 func main() {
 	ln, err := net.Listen("tcp4", ":8000")
 	if err != nil {
-		log.Panicf("couldn't listen on port 80", err)
+		log.Panicf("couldn't listen on port 8000", err)
 	}
 
 	for {
