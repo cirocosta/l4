@@ -1,6 +1,16 @@
-hash: 74f6b2fcd15b2798027e2de3ac335faf4de026070a957f2197d70fcf780faf5d
-updated: 2017-08-07T18:08:16.796395578-03:00
+hash: 8f897369b127a4eb9b6be8485231203108ee02925bfd58892dafe8ffd52f5edc
+updated: 2017-08-10T22:11:13.36921817-03:00
 imports:
 - name: github.com/alexflint/go-arg
   version: cef6506c97e5731da728c374ff3523e481026423
+- name: github.com/alexflint/go-scalar
+  version: 45e5d6cd8605faef82fda2bacc59e734a0b6f1f0
+- name: github.com/pkg/errors
+  version: 645ef00459ed84a119197bfb8d8205042c6df63d
+- name: github.com/rs/xid
+  version: 02dd45c33376f85d1064355dc790dcc4850596b1
+- name: github.com/rs/zerolog
+  version: 2ed2f2c974489526d10329dae76d0f175684109a
+  subpackages:
+  - internal/json
 testImports: []
