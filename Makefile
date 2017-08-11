@@ -8,4 +8,7 @@ fmt:
 image:
 	docker build -t cirocosta/l4 .
 
+test:
+	cd ./lib && go test -v
+
 .PHONY: install
