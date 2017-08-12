@@ -107,7 +107,8 @@ func TestNew(t *testing.T) {
 //
 //	   s5
 //	proxy	from:s1,	to:s3
-//		-- reads on s1	-- reads on s2
+//		-- reads  on s1	-- reads  on s3
+//		-- writes on s3	-- writes on s1
 //
 //	conn1:	s1.write()
 //	echo:	s2.read()
@@ -156,7 +157,7 @@ func TestProxyingInLoop(t *testing.T) {
 		assert.NoError(t, proxy.Transfer())
 	}()
 
-	time.Sleep(1000 * time.Millisecond)
+	time.Sleep(500 * time.Millisecond)
 
 	n, err := downstream.Write(msg)
 	assert.NoError(t, err)
