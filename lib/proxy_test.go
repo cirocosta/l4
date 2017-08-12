@@ -73,9 +73,58 @@ func TestNew(t *testing.T) {
 	}
 }
 
-// down --> proxy
-// proxy --> upstream
-func TestProxying(t *testing.T) {
+// Typically 'proxy' sits in the middle
+// of two connections:
+//	    s1    s2   s3    s4
+//	conn1 <--> proxy <--> conn2
+//
+// such that:
+//	- a write from 'conn1' to 'proxy'
+//	becomes a write from 'proxy' to 'conn2'.
+//
+//	conn1:	s1.write()
+//	proxy:	s2.read()
+//	proxy: s3.write()
+//	conn2:	s4.read()
+//
+//
+//	- a write from 'conn2' to 'proxy'
+//	becomes a write from 'proxy' to 'conn1'.
+//
+//	(example above but in oposite direction)
+//
+//
+// Here we do something atypical that makes
+// the proxy get the connections in a loop
+// scenario due to the fact that there's an
+// echo server in the middle.
+//
+//         s1       s2
+//	conn1 <--> echo
+//
+//	   s3	    s4
+//	conn2 <--> echo
+//
+//	   s5
+//	proxy	from:s1,	to:s3
+//		-- reads on s1	-- reads on s2
+//
+//	conn1:	s1.write()
+//	echo:	s2.read()
+//	echo:	s2.write()
+//	proxy:	s1.read()
+//	proxy:	s3.write()
+//	proxy:	s3.read()
+//	proxy:	s1.write()
+//	echo:	s2.read()
+//	echo:	s2.write()
+//	proxy:	s1.read()
+//	... loops until we cancel the transfer.
+//
+//	Note that we're looping only in one of the
+//	sides (the one that initiated).
+//
+func TestProxyingInLoop(t *testing.T) {
 	var msg = []byte("PING\r\n")
 	var receiveBuffer = make([]byte, len(msg))
 	var buf bytes.Buffer
@@ -107,7 +156,7 @@ func TestProxying(t *testing.T) {
 		assert.NoError(t, proxy.Transfer())
 	}()
 
-	time.Sleep(200 * time.Millisecond)
+	time.Sleep(1000 * time.Millisecond)
 
 	n, err := downstream.Write(msg)
 	assert.NoError(t, err)
@@ -116,5 +165,5 @@ func TestProxying(t *testing.T) {
 	n, err = upstream.Read(receiveBuffer)
 	assert.NoError(t, err)
 	assert.Equal(t, len(msg), n)
-	assert.True(t, bytes.Count(buf.Bytes(), msg) > 50)
+	assert.True(t, bytes.Count(buf.Bytes(), msg) > 4)
 }

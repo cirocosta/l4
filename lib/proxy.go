@@ -55,13 +55,13 @@ func (p *Proxy) Transfer() (err error) {
 	var errChan = make(chan error, 1)
 
 	go func() {
-		err2 := Copy(p.to, p.from, p.toStats)
+		err2 := copy(p.to, p.from, p.toStats)
 		p.to.Close()
 		p.from.Close()
 		errChan <- err2
 	}()
 
-	err1 := Copy(p.from, p.to, p.fromStats)
+	err1 := copy(p.from, p.to, p.fromStats)
 	p.to.Close()
 	p.from.Close()
 	err2 := <-errChan
@@ -75,7 +75,7 @@ func (p *Proxy) Transfer() (err error) {
 	return
 }
 
-func Copy(to io.Writer, from io.Reader, stats *IoStats) (err error) {
+func copy(to io.Writer, from io.Reader, stats *IoStats) (err error) {
 	var (
 		buf    = make([]byte, bufferSize)
 		readN  int
