@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"net"
+	"strings"
 	"testing"
 	"time"
 
@@ -42,6 +43,9 @@ func (s *DumbTcpServer) Listen() (err error) {
 	for {
 		conn, err := ln.Accept()
 		if err != nil {
+			if strings.Contains(err.Error(), "use of closed network connection") {
+				continue
+			}
 			fmt.Printf("listen errored: %+v\n", err)
 			continue
 		}
