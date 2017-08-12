@@ -79,7 +79,6 @@ func TestDumbTcpServerTransmitsData(t *testing.T) {
 	var buf bytes.Buffer
 
 	server := NewDumbTcpServer(&buf)
-
 	defer server.Close()
 
 	go func() {
