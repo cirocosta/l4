@@ -1,6 +1,11 @@
-# l4
+<h1 align="center">l4 📂  </h1>
 
-> TCP load-balancer that collects all sorts of metrics
+<h5 align="center">Minimal TCP load-balancer</h5>
+
+<br/>
+
+[![Build Status](https://travis-ci.org/cirocosta/l4.svg?branch=master)](https://travis-ci.org/cirocosta/l4)
+
 
 ## Features
 
@@ -8,6 +13,7 @@
 - Established connections count 
 - Connection mapping with name resolution
 - Tx and Rx stats
+- SNI
 
 
 ## Overview
