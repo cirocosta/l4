@@ -20,20 +20,28 @@ type server struct {
 }
 
 type LoadBalancer struct {
-	servers []*server
-	nextIdx int
-	port    int
-	logger  zerolog.Logger
+	servers          []*server
+	nextIdx          int
+	port             int
+	logger           zerolog.Logger
+	keyLog           string
+	skipVerification bool
+	tls              bool
+	domain           string
 }
 
 type LoadBalancerConfig struct {
-	Port  int
-	Debug bool
+	Port             int
+	Debug            bool
+	KeyLog           string
+	SkipVerification bool
+	Tls              bool
+	Domain           string
 }
 
 func NewLoadBalancer(cfg LoadBalancerConfig) (lb LoadBalancer, err error) {
 	if cfg.Port == 0 {
-		err = errors.Errorf("a port != 0 must be specified")
+		err = errors.Errorf("Port != 0 must be specified")
 		return
 	}
 
@@ -43,13 +51,21 @@ func NewLoadBalancer(cfg LoadBalancerConfig) (lb LoadBalancer, err error) {
 		lb.logger = zerolog.New(os.Stderr)
 	}
 
+	lb.keyLog = cfg.KeyLog
+	lb.skipVerification = cfg.SkipVerification
+	lb.tls = cfg.SkipVerification
+	lb.domain = cfg.Domain
 	lb.port = cfg.Port
+	lb.logger = lb.logger.With().
+		Str("from", "load-balancer").
+		Logger()
+
 	return
 }
 
 func (lb *LoadBalancer) Load(addresses []string) (err error) {
 	lb.logger.Info().
-		Int("n-addresses", len(addresses)).
+		Int("addresses", len(addresses)).
 		Msg("loading configuration")
 
 	var servers []*server

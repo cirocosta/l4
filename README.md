@@ -21,21 +21,30 @@
 ### CLI
 
 ```
-Usage: l4 [--port PORT] [--config CONFIG] [--debug] [SERVERS [SERVERS ...]]
+Usage: l4 [opts] SERVERS [SERVERS ...]
 
 Positional arguments:
-  SERVERS
+  SERVERS                list of <ip>:<port> or <domain>:<port> servers to connect to
 
 Options:
-  --port PORT, -p PORT   port to listen to [default: 3000]
-  --config CONFIG, -c CONFIG
-                         configuration file to use
-  --debug, -d            enables debug mode
+  --debug                enables debug mode
+  --port PORT            port to listen to [default: 1337]
+  --server-name SERVER-NAME
+                         server name to use on tls connections
+  --tls-connect          connects to backends via TLS
+  --tls-key-log TLS-KEY-LOG
+                         log tls master secrets to file
+  --tls-listen           listens for TLS connections
+  --tls-listen-cert TLS-LISTEN-CERT
+                         certificate to use when listening to TLS conns
+  --tls-listen-key TLS-LISTEN-KEY
+                         private key to use when listening to TLS conns
+  --tls-skip-verification
+                         skips certificate verification
   --help, -h             display this help and exit
 
 Example:
   l4 \
-	--debug \
 	--port 3000 \
 	127.0.0.1:3000 \
 	127.0.0.1:3001
